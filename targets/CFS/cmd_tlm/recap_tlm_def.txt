@@ -1,0 +1,10 @@
+<%= cfs_tlm_hdr(target_name, 'RECAP_HK', "ReCAP Telemetry") %>
+  APPEND_ITEM ActionBitfield 16 UINT "Action bit field"
+    STATE Idle 0
+    STATE Downlink 1 GREEN
+    STATE Observe 2 GREEN
+  APPEND_ITEM AuctionBitfield 16 UINT "Auction bit field"
+    STATE Idle 0
+    STATE Downlink 1 GREEN
+    STATE Observe 2 GREEN
+  APPEND_ITEM FileCount 16 UINT "Observation file count"

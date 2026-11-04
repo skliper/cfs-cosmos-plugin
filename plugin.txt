@@ -3,49 +3,68 @@
 <% require 'cfs_intf_configs' %>
 <% require 'cfs_fleet_globals' %>
 
-# To expose the EDS enabled flag to the plugin install, uncomment the lines below
-VARIABLE cfs_eds_enabled false
-<% cfs_globals_set_eds_enabled(cfs_eds_enabled) %>
+# Set eds enabled flag
+<% cfs_globals_set_eds_enabled(false) %>
 
-# To set the memory size, uncomment the lines below
-VARIABLE cfs_mem_addr_size 64
-<% cfs_globals_set_mem_addr_size(cfs_mem_addr_size) %>
+# To set the memory size
+<% cfs_globals_set_mem_addr_size(64) %>
 
-# To expose the endianness config to the plugin install, uncomment the lines below
-VARIABLE cfs_endianness LITTLE_ENDIAN
-<% cfs_globals_set_endianness(cfs_endianness) %>
+# Set endianness
+<% cfs_globals_set_endianness("LITTLE_ENDIAN") %>
 
-# This should map to the IP address that GSW sends commands to (and listens to telemetry on)
-VARIABLE cfs_1_intf_ip 172.17.0.1
-VARIABLE cfs_2_intf_ip 172.17.0.1
+# Target names (also used for IP)
+VARIABLE target_1_name blinky
+VARIABLE target_2_name pinky
+VARIABLE target_3_name inky
+VARIABLE target_4_name clyde
+
+# Target command port
+VARIABLE target_1_cmd_port 1233
+VARIABLE target_2_cmd_port 1234
+VARIABLE target_3_cmd_port 1235
+VARIABLE target_4_cmd_port 1236
+
+# Target tlm port
+VARIABLE target_1_tlm_port 2233
+VARIABLE target_2_tlm_port 2234
+VARIABLE target_3_tlm_port 2235
+VARIABLE target_4_tlm_port 2236
 
 # This should map to the IP address that FSW sends telemetry to
 # aka the IP address for the host that this COSMOS instance is running on
 VARIABLE global_tlm_output_ip 127.0.0.1
 
-<% (1..$cfs_fleet_globals_num_cfs_targets).each do |cfs_cpu_index| %>
-
-    # Declare a new instance of the CFS target
-    TARGET CFS <%= cfs_target_name_from_cpu_num(cfs_cpu_index) %>
+<% (1..$cfs_fleet_globals_num_cfs_targets).each do |target_index| %>
 
     # Select the appropriate IP config input variable (declared above) for this cpu number
-    <% if cfs_cpu_index == 1 %>
-        <% current_cfs_intf_ip = cfs_1_intf_ip %>
-    <% elsif cfs_cpu_index == 2 %>
-        <% current_cfs_intf_ip = cfs_2_intf_ip %>
+    <% if target_index == 1 %>
+        <% target_name = target_1_name %>
+        <% target_cmd_port = target_1_cmd_port %>
+        <% target_tlm_port = target_1_tlm_port %>
+    <% elsif target_index == 2 %>
+        <% target_name = target_2_name %>
+        <% target_cmd_port = target_2_cmd_port %>
+        <% target_tlm_port = target_2_tlm_port %>
+    <% elsif target_index == 3 %>
+        <% target_name = target_3_name %>
+        <% target_cmd_port = target_3_cmd_port %>
+        <% target_tlm_port = target_3_tlm_port %>
+    <% elsif target_index == 4 %>
+        <% target_name = target_4_name %>
+        <% target_cmd_port = target_4_cmd_port %>
+        <% target_tlm_port = target_4_tlm_port %>
     <% else %>
         # This line should cause a plugin compilation error
         # If this line is hit, the loop count doesn't match the supported number of interfaces
         <% current_cfs_intf_ip = error %>
     <% end %>
 
+    # Declare target
+    TARGET CFS <%= target_name %>
+
     # Set up the FSW cmd/tlm interface
-    INTERFACE CFS-<%= cfs_cpu_index %>_INTF udp_interface.rb &
-            <%= current_cfs_intf_ip %> &
-            <%= cfs_get_port_num_cmd(cfs_cpu_index) %> &
-            <%= cfs_get_port_num_tlm(cfs_cpu_index) %> &
-            nil nil 128 nil nil
-        MAP_TARGET <%= cfs_target_name_from_cpu_num(cfs_cpu_index) %>
+    INTERFACE <%= target_name %>_INTF udp_interface.rb <%= target_name %> <%= target_cmd_port %> <%= target_tlm_port %>
+        MAP_TARGET <%= target_name %>
         PROTOCOL WRITE ProtocolCcsdsChecksum
         PROTOCOL WRITE ProtocolCcsdsLength
         PROTOCOL READ LengthProtocol 32 16 7 1 BIG_ENDIAN 0 nil

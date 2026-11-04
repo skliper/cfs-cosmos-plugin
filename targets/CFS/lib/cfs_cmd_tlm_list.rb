@@ -22,6 +22,13 @@ $CFS_CMD_TLM_LIST = {
     # -------------------------------------------------------------------------
     # Commands
     # -------------------------------------------------------------------------
+    "RECAP_CMD" => FswMsgInfo.new(
+        base_stream_id: 0x1900,
+        packet_names: [
+            "RECAP_CMD_NOOP",
+            "RECAP_CMD_RUNAUCTION",
+        ]
+    ),
     "CFE_EVS_CMD" => FswMsgInfo.new(
         base_stream_id: 0x1801,
         packet_names: [
@@ -503,6 +510,12 @@ $CFS_CMD_TLM_LIST = {
     # -------------------------------------------------------------------------
     # Telemetry
     # -------------------------------------------------------------------------
+    "RECAP_HK" => FswMsgInfo.new(
+        base_stream_id: 0x0900,
+        packet_names: [
+            "RECAP_HK",
+        ]
+    ),
     "CFE_ES_HK" => FswMsgInfo.new(
         base_stream_id: 0x0800,
         packet_names: [
@@ -866,19 +879,11 @@ end
 #------------------------------------------------------------------------------
 def get_cfs_pkt_msg_id(pkt_name, cpu_num_input)
     pkt_list_key = get_cfs_cmd_tlm_list_key_from_pkt_name(pkt_name)
-    cpu_num = cpu_num_or_nil(cpu_num_input)
     msg_id = String.new
     if !$CFS_CMD_TLM_LIST.key?(pkt_list_key)
         msg_id << "pkt_name error: #{pkt_name} not recognized"
-    elsif (cpu_num == nil)
-        msg_id << "cpu_num_input error: could not convert #{cpu_num_input} to an integer"
-    elsif ((cpu_num < 1) && (cpu_num > 2))
-        msg_id << "cpu_num_input error: should be 1 or 2. instead got: #{cpu_num}."
     else
-        msg_id_with_cpu_num = get_cfs_msg_id_from_base(
-                $CFS_CMD_TLM_LIST[pkt_list_key].fsw_msg_base_stream_id,
-                cpu_num-1)
-        msg_id << sprintf("0x%04X", msg_id_with_cpu_num)
+        msg_id << sprintf("0x%04X", $CFS_CMD_TLM_LIST[pkt_list_key].fsw_msg_base_stream_id)
     end
     return msg_id
 end
@@ -888,7 +893,7 @@ end
 #------------------------------------------------------------------------------
 def cfs_cmd_tlm_list_test
     raise "TEST_FAIL" unless (get_cfs_pkt_msg_id("CFE_TBL_CMD_NOOP", "1") == "0x1804")
-    raise "TEST_FAIL" unless (get_cfs_pkt_msg_id("CFE_TBL_CMD_NOOP", "2") == "0x1904")
+    #raise "TEST_FAIL" unless (get_cfs_pkt_msg_id("CFE_TBL_CMD_NOOP", "2") == "0x1904")
 end
 
 cfs_cmd_tlm_list_test()

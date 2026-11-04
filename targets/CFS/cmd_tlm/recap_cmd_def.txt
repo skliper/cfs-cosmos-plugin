@@ -1,0 +1,21 @@
+<%= cfs_cmd_hdr(target_name, 'RECAP_CMD_NOOP', 0, 'ReCAP noop command') %>
+
+<%= cfs_cmd_hdr(target_name, 'RECAP_CMD_RUNAUCTION', 1, "Run auction") %>
+  APPEND_PARAMETER FromId 16 UINT 0 MAX_UINT16 0 "Auctioneer ID"
+    STATE Blinky 0
+    STATE Pinky  1
+    STATE Inky   2
+    STATE Clyde  3
+  APPEND_PARAMETER ToBitfield 16 UINT 0 MAX_UINT16 0xFFFF "Bidding agents bitfield"
+    STATE Blinky 0x0000
+    STATE Pinky  0x0001
+    STATE Inky   0x0002
+    STATE Clyde  0x0004
+    STATE All    0xFFFF
+    FORMAT_STRING "0x%04X"
+  APPEND_PARAMETER ActionID 16 UINT 0 MAX_UINT16 0 "Action ID"
+    STATE Downlink 0
+    STATE Observe  1
+  APPEND_PARAMETER ActionCycles 16 UINT 0 MAX_UINT16 10 "Action Cycles"
+  APPEND_PARAMETER Priority     16 UINT 0 MAX_UINT16  0 "Priority"
+  APPEND_PARAMETER TargetID     16 UINT 0 MAX_UINT16  0 "Target ID"

@@ -1,0 +1,59 @@
+SCREEN AUTO AUTO 1.0
+
+VERTICAL
+    TITLE "ReCAP 4 Agent Observation and Downlink Auctions"
+
+    HORIZONTAL
+        LINEGRAPH BLINKY RECAP_HK FILECOUNT Blinky
+            SUBSETTING 0 TEXTCOLOR red
+            SETTING ITEM PINKY RECAP_HK FILECOUNT Pinky
+            SETTING ITEM INKY  RECAP_HK FILECOUNT Inky
+            SETTING ITEM CLYDE RECAP_HK FILECOUNT Clyde
+            SETTING SIZE 750 400
+            SETTING SECONDSGRAPHED 600
+
+        MATRIXBYCOLUMNS 5
+             LABEL "Agent"
+             LABEL "Auction"
+             LABEL "Action"
+             LABEL "ActionCycles:"
+             NAMED_WIDGET ACTIONCYCLES TEXTFIELD 12 "10"
+
+             LABEL "Blinky"
+                 SETTING TEXTCOLOR red
+             VALUE BLINKY RECAP_HK AUCTIONBITFIELD
+             VALUE BLINKY RECAP_HK ACTIONBITFIELD
+             BUTTON 'Downlink' 'var cycles = screen.getNamedWidget("ACTIONCYCLES").text();' +
+                    'api.cmd("BLINKY RECAP_CMD_RUNAUCTION with FROMID 0, ACTIONID 0, ACTIONCYCLES "+cycles+"")'
+             BUTTON 'Observe' 'var cycles = screen.getNamedWidget("ACTIONCYCLES").text();' +
+                    'api.cmd("BLINKY RECAP_CMD_RUNAUCTION with FROMID 0, ACTIONID 1, ACTIONCYCLES "+cycles+"")'
+
+             LABEL "Pinky"
+                 SETTING TEXTCOLOR hotpink
+             VALUE PINKY RECAP_HK AUCTIONBITFIELD
+             VALUE PINKY RECAP_HK ACTIONBITFIELD
+             BUTTON 'Downlink' 'var cycles = screen.getNamedWidget("ACTIONCYCLES").text();' +
+                    'api.cmd("PINKY RECAP_CMD_RUNAUCTION with FROMID 1, ACTIONID 0, ACTIONCYCLES "+cycles+"")'
+             BUTTON 'Observe' 'var cycles = screen.getNamedWidget("ACTIONCYCLES").text();' +
+                    'api.cmd("PINKY RECAP_CMD_RUNAUCTION with FROMID 1, ACTIONID 1, ACTIONCYCLES "+cycles+"")'
+
+             LABEL "Inky"
+                 SETTING TEXTCOLOR cyan
+             VALUE INKY RECAP_HK AUCTIONBITFIELD
+             VALUE INKY RECAP_HK ACTIONBITFIELD
+             BUTTON 'Downlink' 'var cycles = screen.getNamedWidget("ACTIONCYCLES").text();' +
+                    'api.cmd("INKY RECAP_CMD_RUNAUCTION with FROMID 2, ACTIONID 0, ACTIONCYCLES "+cycles+"")'
+             BUTTON 'Observe' 'var cycles = screen.getNamedWidget("ACTIONCYCLES").text();' +
+                    'api.cmd("INKY RECAP_CMD_RUNAUCTION with FROMID 2, ACTIONID 1, ACTIONCYCLES "+cycles+"")'
+
+             LABEL "Clyde"
+                 SETTING TEXTCOLOR darkorange
+             VALUE CLYDE RECAP_HK AUCTIONBITFIELD
+             VALUE CLYDE RECAP_HK ACTIONBITFIELD
+             BUTTON 'Downlink' 'var cycles = screen.getNamedWidget("ACTIONCYCLES").text();' +
+                    'api.cmd("CLYDE RECAP_CMD_RUNAUCTION with FROMID 3, ACTIONID 0, ACTIONCYCLES "+cycles+"")'
+             BUTTON 'Observe' 'var cycles = screen.getNamedWidget("ACTIONCYCLES").text();' +
+                    'api.cmd("CLYDE RECAP_CMD_RUNAUCTION with FROMID 3, ACTIONID 1, ACTIONCYCLES "+cycles+"")'
+       END
+    END
+END
